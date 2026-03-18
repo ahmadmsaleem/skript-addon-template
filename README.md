@@ -220,7 +220,6 @@ For events, you can also use builder methods:
 | Event | `Evt` | `EvtBlockBreak.java` |
 
 ## Building
-
 ```bash
 # Standard build
 ./gradlew build

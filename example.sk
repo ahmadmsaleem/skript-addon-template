@@ -1,0 +1,31 @@
+# ===================================
+# skript-addon-template — Example Script
+# Place this file in plugins/Skript/scripts/
+# ===================================
+
+# Expression example — "greeting of %player%"
+command /greet <player>:
+	trigger:
+		send greeting of arg-1 to sender
+
+# Condition example — "player is example dummy" (checks if name starts with A)
+command /checkdummy:
+	trigger:
+		if player is example dummy:
+			send "Your name starts with A!"
+		else:
+			send "Your name doesn't start with A"
+
+# Effect example — "example announce %player%"
+on join:
+	example announce player
+
+# Event examples — "on example sneak toggle"
+on example sneak toggle:
+	send "You toggled sneak!" to player
+
+on example start sneaking:
+	send "Started sneaking!" to player
+
+on example stop sneaking:
+	send "Stopped sneaking!" to player
