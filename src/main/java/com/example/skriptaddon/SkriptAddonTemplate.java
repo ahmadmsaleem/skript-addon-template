@@ -1,8 +1,17 @@
 package com.example.skriptaddon;
 
 import ch.njol.skript.Skript;
-import ch.njol.skript.lang.SyntaxElement;
 import ch.njol.skript.util.Version;
+import com.example.skriptaddon.elements.conditions.CondExampleCondition;
+import com.example.skriptaddon.elements.effects.EffExampleEffect;
+import com.example.skriptaddon.elements.events.EvtExampleEvent;
+import com.example.skriptaddon.elements.expressions.ExprConfigValue;
+import com.example.skriptaddon.elements.expressions.ExprCustomColor;
+import com.example.skriptaddon.elements.expressions.ExprExampleExpression;
+import com.example.skriptaddon.elements.functions.FuncLocationBetween;
+import com.example.skriptaddon.elements.sections.SecCooldown;
+import com.example.skriptaddon.elements.structures.StructCustomConfig;
+import com.example.skriptaddon.elements.types.TypeCustomColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -10,9 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import org.skriptlang.skript.addon.AddonModule;
 import org.skriptlang.skript.addon.SkriptAddon;
 import org.skriptlang.skript.registration.SyntaxRegistry;
-import org.skriptlang.skript.util.ClassLoader;
-
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Main plugin class — serves as both the Bukkit entry point and Skript addon module.
@@ -37,8 +43,8 @@ public class SkriptAddonTemplate extends JavaPlugin implements AddonModule {
 			getLogger().severe("Could not find Skript! Make sure you have it installed and that it properly loaded. Disabling...");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
-		} else if (Skript.getVersion().isSmallerThan(new Version("2.14.0-pre1"))) {
-			getLogger().severe("You are running an unsupported version of Skript. Please update to at least Skript 2.14.0. Disabling...");
+		} else if (Skript.getVersion().isSmallerThan(new Version("2.14.3"))) {
+			getLogger().severe("You are running an unsupported version of Skript. Please update to at least Skript 2.14.3. Disabling...");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
@@ -54,30 +60,43 @@ public class SkriptAddonTemplate extends JavaPlugin implements AddonModule {
 	}
 
 	@Override
+	public @NotNull String name() {
+		return "skript-addon-template";
+	}
+
+	@Override
 	public void init(@NotNull SkriptAddon addon) {
 		// Register custom types here using Classes.registerClass()
 		// Types must be registered BEFORE syntax that uses them
+		TypeCustomColor.register();
 	}
 
 	@Override
 	public void load(@NotNull SkriptAddon addon) {
-		// Auto-discover and register all syntax elements in the elements package
-		// Every syntax class MUST have: public static void register(SyntaxRegistry registry)
-		ClassLoader.builder()
-				.basePackage("com.example.skriptaddon.elements")
-				.deep(true) // scan sub-packages (conditions/, effects/, events/, expressions/)
-				.initialize(true)
-				.forEachClass(clazz -> {
-					if (SyntaxElement.class.isAssignableFrom(clazz)) {
-						try {
-							clazz.getMethod("register", SyntaxRegistry.class).invoke(null, addon.syntaxRegistry());
-						} catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-							getLogger().severe("Failed to load syntax class: " + e);
-						}
-					}
-				})
-				.build()
-				.loadClasses(SkriptAddonTemplate.class, getFile());
+		SyntaxRegistry registry = addon.syntaxRegistry();
+
+		// Register expressions
+		ExprExampleExpression.register(registry);
+		ExprCustomColor.register(registry);
+		ExprConfigValue.register(registry);
+
+		// Register conditions
+		CondExampleCondition.register(registry);
+
+		// Register effects
+		EffExampleEffect.register(registry);
+
+		// Register events
+		EvtExampleEvent.register(registry);
+
+		// Register sections
+		SecCooldown.register(registry);
+
+		// Register structures
+		StructCustomConfig.register(registry);
+
+		// Register functions
+		FuncLocationBetween.register(addon);
 	}
 
 }

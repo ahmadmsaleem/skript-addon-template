@@ -1,0 +1,6 @@
+test "skript-addon-template - example greeting":
+	# Expression returns "Hello, <name>!" for a player
+	set {_greeting} to example greeting of player
+	assert {_greeting} is set with "Greeting should exist"
+	assert {_greeting} contains "Hello, " with "Greeting should start with Hello"
+	assert {_greeting} contains name of player with "Greeting should contain player name"

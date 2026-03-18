@@ -1,0 +1,21 @@
+custom config "test-config":
+	greeting = Hello, world!
+	max-lives = 3
+
+test "skript-addon-template - config value read":
+	set {_greeting} to config value "greeting" from "test-config"
+	assert {_greeting} is set with "Config value should exist"
+	assert {_greeting} = "Hello, world!" with "Greeting should match"
+
+test "skript-addon-template - config value second key":
+	set {_lives} to config value "max-lives" from "test-config"
+	assert {_lives} is set with "Second key should exist"
+	assert {_lives} = "3" with "Max lives should be 3"
+
+test "skript-addon-template - config value missing key":
+	set {_missing} to config value "nonexistent" from "test-config"
+	assert {_missing} is not set with "Missing key should return nothing"
+
+test "skript-addon-template - config value missing config":
+	set {_missing} to config value "greeting" from "does-not-exist"
+	assert {_missing} is not set with "Missing config should return nothing"

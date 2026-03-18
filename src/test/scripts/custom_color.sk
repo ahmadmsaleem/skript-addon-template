@@ -1,0 +1,11 @@
+test "skript-addon-template - point type":
+	set {_point} to point at 10, 20
+	assert {_point} is set with "Point should exist"
+	assert "%{_point}%" contains "10" with "Point string should contain x value"
+	assert "%{_point}%" contains "20" with "Point string should contain y value"
+
+test "skript-addon-template - point negative coords":
+	set {_point} to point at -5, -10
+	assert {_point} is set with "Negative point should exist"
+	assert "%{_point}%" contains "-5" with "Should contain negative x"
+	assert "%{_point}%" contains "-10" with "Should contain negative y"

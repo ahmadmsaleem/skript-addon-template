@@ -1,0 +1,3 @@
+test "skript-addon-template - example announce":
+	# Effect sends a welcome message — just verify it parses and runs without error
+	example announce player

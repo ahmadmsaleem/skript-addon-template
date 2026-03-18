@@ -1,0 +1,8 @@
+test "skript-addon-template - location_between":
+	set {_loc1} to location(0, 64, 0, world "world")
+	set {_loc2} to location(10, 74, 10, world "world")
+	set {_mid} to location_between({_loc1}, {_loc2})
+	assert {_mid} is set with "Midpoint should exist"
+	assert x of {_mid} = 5 with "X should be midpoint"
+	assert y of {_mid} = 69 with "Y should be midpoint"
+	assert z of {_mid} = 5 with "Z should be midpoint"

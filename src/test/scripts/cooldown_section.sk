@@ -1,0 +1,16 @@
+test "skript-addon-template - cooldown first use":
+	# First use should run the body
+	with cooldown 1 minute for player:
+		set {_ran} to true
+	assert {_ran} is set with "First use should run the section body"
+
+test "skript-addon-template - cooldown blocks second use":
+	# Use a short cooldown, then try again immediately — body should be skipped
+	with cooldown 10 minutes for player:
+		set {_first} to true
+	assert {_first} is set with "First use should run"
+
+	# Second use immediately — should be blocked
+	with cooldown 10 minutes for player:
+		set {_second} to true
+	assert {_second} is not set with "Second use should be blocked by cooldown"

@@ -8,8 +8,8 @@ A template for creating [Skript](https://github.com/SkriptLang/Skript) addons us
 | Dependency | Version | Why |
 |---|---|---|
 | Java | 21+ | Required by Skript 2.14.0 |
-| Skript | 2.14.0+ | Uses the new addon API (SkriptAddon, AddonModule, SyntaxRegistry) |
-| Spigot/Paper | 1.19.4+ | Bukkit API |
+| Skript | 2.14.3+ | Uses the new addon API (SkriptAddon, AddonModule, SyntaxRegistry) |
+| Paper | 1.19.4+ | Paper API (Skript is Paper-only) |
 | Gradle | 8.x | Build tool |
 
 ## Getting Started
@@ -24,25 +24,63 @@ A template for creating [Skript](https://github.com/SkriptLang/Skript) addons us
 5. Delete the example syntax files and start writing your own
 6. Build with `./gradlew build`
 
+## Learning Guide
+
+| I want to learn... | Read these files | Skript syntax |
+|---|---|---|
+| **How the addon starts up** | `SkriptAddonTemplate.java` | — |
+| **Expressions** (return a value) | `ExprExampleExpression.java` | `greeting of player` |
+| **Conditions** (true/false checks) | `CondExampleCondition.java` | `player is example dummy` |
+| **Effects** (perform an action) | `EffExampleEffect.java` | `example announce player` |
+| **Events** (listen to Bukkit events) | `EvtExampleEvent.java` | `on example sneak toggle:` |
+| **Functions** (callable with params) | `FuncLocationBetween.java` | `location_between(loc1, loc2)` |
+| **Sections** (code blocks with `:`) | `SecCooldown.java` | `with cooldown 5 seconds for player:` |
+| **Structures** (top-level config blocks) | `StructCustomConfig.java` + `ExprConfigValue.java` | `custom config "name":` |
+| **Custom types** (ClassInfo, Parser, Serializer) | `TypeCustomColor.java` + `ExprCustomColor.java` | `point at 10, 20` |
+| **Testing** | `src/test/scripts/*.sk` | `assert {_var} is set with "msg"` |
+| **Build & CI** | `build.gradle` + `.github/workflows/gradle.yml` | — |
+
+All Java files are in `src/main/java/com/example/skriptaddon/elements/`.
+
 ## Project Structure
 
 ```
 src/main/java/com/example/skriptaddon/
 ├── SkriptAddonTemplate.java              # Main plugin class (JavaPlugin + AddonModule)
 └── elements/                             # All syntax elements go here
-    ├── conditions/                       # Conditions (true/false checks)
+    ├── conditions/
     │   └── CondExampleCondition.java     # "player is example dummy"
-    ├── effects/                          # Effects (actions, no return value)
+    ├── effects/
     │   └── EffExampleEffect.java         # "example announce player"
-    ├── events/                           # Events (Bukkit event → Skript trigger)
+    ├── events/
     │   └── EvtExampleEvent.java          # "on example sneak toggle"
-    └── expressions/                      # Expressions (returns a value)
-        └── ExprExampleExpression.java    # "greeting of player"
+    ├── expressions/
+    │   ├── ExprExampleExpression.java    # "greeting of player"
+    │   ├── ExprCustomColor.java         # "point at 10, 20"
+    │   └── ExprConfigValue.java         # "config value "key" from "name""
+    ├── functions/
+    │   └── FuncLocationBetween.java      # "location_between(loc1, loc2)"
+    ├── sections/
+    │   └── SecCooldown.java             # "with cooldown 5 seconds for player:"
+    ├── structures/
+    │   └── StructCustomConfig.java      # "custom config "name":"
+    └── types/
+        └── TypeCustomColor.java         # "point2d" type (2D point)
 
 src/main/resources/
 ├── plugin.yml                            # Bukkit plugin descriptor
 └── lang/
     └── default.lang                      # Custom type names and enum values
+
+src/test/scripts/                         # Skript-based tests (run via skript-test-action)
+├── condition.sk
+├── cooldown_section.sk
+├── custom_color.sk
+├── custom_config.sk
+├── effect.sk
+├── event.sk
+├── expression.sk
+└── location_between.sk
 ```
 
 ## How the Addon System Works
@@ -52,24 +90,39 @@ src/main/resources/
 ```
 Server starts
   → Bukkit calls onEnable()
-    → Check Skript is installed and version >= 2.14.0
+    → Check Skript is installed and version >= 2.14.3
     → Register with Skript via registerAddon()
     → Skript calls init() — register custom types (ClassInfo)
-    → Skript calls load() — auto-discover and register all syntax elements
+    → Skript calls load() — register all syntax elements
 ```
 
-### Auto-Discovery
+### Registration
 
-The main class scans `com.example.skriptaddon.elements` and all sub-packages for classes that implement `SyntaxElement`. For each one, it calls the static `register(SyntaxRegistry)` method via reflection.
+Types are registered in `init()` (before syntax). Everything else is registered in `load()`:
 
-**Every syntax class MUST have this method:**
 ```java
-public static void register(SyntaxRegistry registry) {
-    // registration code here
+@Override
+public void init(@NotNull SkriptAddon addon) {
+    TypeCustomColor.register(); // types MUST be registered before syntax that uses them
+}
+
+@Override
+public void load(@NotNull SkriptAddon addon) {
+    SyntaxRegistry registry = addon.syntaxRegistry();
+
+    ExprExampleExpression.register(registry);
+    ExprCustomColor.register(registry);
+    ExprConfigValue.register(registry);
+    CondExampleCondition.register(registry);
+    EffExampleEffect.register(registry);
+    EvtExampleEvent.register(registry);
+    SecCooldown.register(registry);
+    StructCustomConfig.register(registry);
+    FuncLocationBetween.register(addon);
 }
 ```
 
-### The 4 Syntax Element Types
+### The 7 Syntax Element Types
 
 | Type | Superclass | Registration | Purpose | Example Syntax |
 |---|---|---|---|---|
@@ -77,6 +130,10 @@ public static void register(SyntaxRegistry registry) {
 | **Condition** | `PropertyCondition<T>` | `infoBuilder()` | Returns true/false | `player is example dummy` |
 | **Effect** | `Effect` | `SyntaxInfo.builder()` | Performs an action | `example announce player` |
 | **Event** | `SkriptEvent` | `BukkitSyntaxInfos.Event.builder()` | Maps Bukkit events | `on example sneak toggle:` |
+| **Function** | `DefaultFunction<T>` | `DefaultFunction.builder()` | Callable function | `location_between(loc1, loc2)` |
+| **Section** | `Section` | `SyntaxInfo.builder()` | Code block with `:` | `with cooldown 5 seconds for player:` |
+| **Structure** | `Structure` | `SyntaxInfo.Structure.builder()` | Top-level block | `custom config "name":` |
+| **Type** | `ClassInfo<T>` | `Classes.registerClass()` | Custom Skript type | `point2d` |
 
 ### Registration Cheat Sheet
 
@@ -122,9 +179,73 @@ public static void register(SyntaxRegistry registry) {
             .addEvent(PlayerJoinEvent.class) // Bukkit event class
             .addPatterns("my custom event")
             .addDescription("When something happens.")
-            .addExample("on my custom event:\n\tsend \"hello\" to player")
+            .addExample("""
+                    on my custom event:
+                        send "hello" to player
+                    """)
             .addSince("1.0.0")
             .build());
+}
+```
+
+**Function** (callable from Skript):
+```java
+public static void register(SkriptAddon addon) {
+    DefaultFunction<Location> function = DefaultFunction.builder(addon, "my_function", Location.class)
+            .description("What it does.")
+            .examples("set {_x} to my_function(arg1, arg2)")
+            .since("1.0.0")
+            .parameter("param1", Location.class)
+            .parameter("param2", Location.class)
+            .build(args -> {
+                Location loc = args.get("param1");
+                return loc; // return value or null
+            });
+    Functions.register(function);
+}
+```
+
+**Section** (code block with `:`):
+```java
+public static void register(SyntaxRegistry registry) {
+    registry.register(SyntaxRegistry.SECTION,
+        SyntaxInfo.builder(MySection.class)
+            .supplier(MySection::new)
+            .addPatterns("my section %timespan% for %player%")
+            .build());
+}
+// Override init() with SectionNode param, call loadCode() to compile the body
+// Override walk() to run the body conditionally with Trigger.walk(trigger, event)
+```
+
+**Structure** (top-level block):
+```java
+public static void register(SyntaxRegistry registry) {
+    registry.register(SyntaxRegistry.STRUCTURE,
+        SyntaxInfo.Structure.builder(MyStructure.class)
+            .supplier(MyStructure::new)
+            .addPatterns("my structure %string%")
+            .nodeType(SyntaxInfo.Structure.NodeType.SECTION)
+            .build());
+}
+// Override init() with EntryContainer param, read entries from SectionNode
+// Override load() to finalize — return true on success
+```
+
+**Type** (custom ClassInfo — registered in `init()`, not `load()`):
+```java
+public static void register() {
+    Classes.registerClass(new ClassInfo<>(MyType.class, "mytype")
+            .user("my ?types?")
+            .name("My Type")
+            .description("What this type represents.")
+            .since("1.0.0")
+            .parser(new Parser<>() {
+                public boolean canParse(ParseContext context) { return false; }
+                public String toString(MyType o, int flags) { return o.toString(); }
+                public String toVariableNameString(MyType o) { return o.toString(); }
+            })
+            .serializer(new Serializer<>() { /* serialize/deserialize */ }));
 }
 ```
 
@@ -218,12 +339,57 @@ For events, you can also use builder methods:
 | Condition | `Cond` | `CondIsFlying.java` |
 | Effect | `Eff` | `EffTeleport.java` |
 | Event | `Evt` | `EvtBlockBreak.java` |
+| Function | `Func` | `FuncLocationBetween.java` |
+| Section | `Sec` | `SecCooldown.java` |
+| Structure | `Struct` | `StructCustomConfig.java` |
+| Type | `Type` | `TypeCustomColor.java` |
 
 ## Example Script
 
 See [`example.sk`](example.sk) for a ready-to-use Skript file that demonstrates all the example syntax elements. Place it in `plugins/Skript/scripts/` to test.
 
+## Testing
+
+Tests are Skript-based `.sk` files in `src/test/scripts/`, run on a real Paper server via [skript-test-action](https://github.com/SkriptLang/skript-test-action) in CI.
+
+### Test Files
+
+| File | What it tests |
+|---|---|
+| `expression.sk` | `example greeting of %player%` returns correct greeting |
+| `condition.sk` | `is example dummy` checks player name starts with "A" |
+| `effect.sk` | `example announce %player%` runs without error |
+| `event.sk` | All 3 sneak toggle event patterns parse correctly |
+| `location_between.sk` | `location_between()` function returns correct midpoint |
+| `custom_color.sk` | `point at x, y` type creation and negative coords |
+| `cooldown_section.sk` | `with cooldown` section runs body on first use |
+| `custom_config.sk` | `custom config` structure parses key=value entries |
+
+### Writing Tests
+
+```sk
+test "skript-addon-template - my feature":
+    # Setup
+    set {_var} to something
+
+    # Assert
+    assert {_var} is set with "Variable should exist"
+    assert {_var} = expected_value with "Should equal expected"
+```
+
+### Running Tests in CI
+
+Add this to your GitHub Actions workflow:
+
+```yaml
+- uses: SkriptLang/skript-test-action@v1.2
+  with:
+    test-script-directory: src/test/scripts
+    extra-plugins-directory: build/libs
+```
+
 ## Building
+
 ```bash
 # Standard build
 ./gradlew build
@@ -270,7 +436,6 @@ if (worldGuard == null || !worldGuard.isEnabled()) {
 - [Skript JavaDocs](https://docs.skriptlang.org/javadocs/)
 - [skript-worldguard](https://github.com/SkriptLang/skript-worldguard) — Real-world addon this template is based on
 - [SkBee](https://github.com/ShaneBeee/SkBee) — Large Skript addon for reference
-- [Spigot API JavaDocs](https://hub.spigotmc.org/javadocs/spigot/)
 - [Paper API JavaDocs](https://jd.papermc.io/paper/1.21.11/)
 - [Skript Pattern Calculator](https://bi0qaw.github.io/skript-pattern-calculator/) — Combinatoric calculator to see how many different ways your pattern can be matched
 

@@ -1,0 +1,13 @@
+test "skript-addon-template - example sneak toggle":
+	# Verify all three event patterns parse correctly
+	# Events are tested by checking that the script loads without errors
+	# Runtime behavior requires actual player interaction
+
+on example sneak toggle:
+	send "toggled" to player
+
+on example start sneaking:
+	send "start" to player
+
+on example stop sneaking:
+	send "stop" to player

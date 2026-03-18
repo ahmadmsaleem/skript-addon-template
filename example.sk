@@ -29,3 +29,71 @@ on example start sneaking:
 
 on example stop sneaking:
 	send "Stopped sneaking!" to player
+
+# Type + Expression example — "point at x, y"
+#
+# Types let you register a Java class so Skript understands it.
+# TypeCustomColor (a 2D point) is registered as a ClassInfo with:
+#   - Parser: how Skript displays it as text (e.g., "Point(10, 20)")
+#   - Serializer: how it's saved/loaded from variables
+#
+# Run: /point 10 20
+command /point <integer> <integer>:
+	trigger:
+		set {_point} to point at arg-1, arg-2
+		send "Created: %{_point}%" to sender
+
+# Points can be saved in variables
+command /savepoint <integer> <integer>:
+	trigger:
+		set {point::%player's uuid%} to point at arg-1, arg-2
+		send "Saved your point: %{point::%player's uuid%}%" to sender
+
+command /mypoint:
+	trigger:
+		if {point::%player's uuid%} is set:
+			send "Your saved point: %{point::%player's uuid%}%" to sender
+		else:
+			send "No saved point! Use /savepoint <x> <y> first." to sender
+
+
+# Section example — "with cooldown %timespan% for %player%"
+# Runs the code inside only if the player's cooldown has expired.
+# If still on cooldown, the section body is skipped silently.
+command /heal:
+	trigger:
+		with cooldown 30 seconds for player:
+			heal player
+			send "<green>You have been healed!" to player
+			send "<gray>Cooldown: 30 seconds" to player
+
+# Structure example — "custom config"
+#
+# Structures are top-level blocks (like command:, on event:) that are
+# parsed when the script loads, not at runtime. They define data or
+# configuration that other syntax can read.
+#
+# This structure reads key = value entries and stores them in a map.
+# Use "config value" expression to read them at runtime.
+
+custom config "server-messages":
+	welcome = <green>Welcome to the server!
+	farewell = &7Goodbye, see you soon!
+	rules = &eNo griefing, be respectful.
+
+# Now use the config values in actual gameplay
+on join:
+	send config value "welcome" from "server-messages" to player
+
+on quit:
+	broadcast config value "farewell" from "server-messages"
+
+command /rules:
+	trigger:
+		send config value "rules" from "server-messages" to sender
+
+# Function example — "location_between(loc1, loc2)"
+command /midpoint <player>:
+	trigger:
+		set {_mid} to location_between(player's location, arg-1's location)
+		send "Midpoint: %{_mid}%" to sender

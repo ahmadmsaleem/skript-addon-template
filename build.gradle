@@ -24,12 +24,9 @@ repositories {
     mavenCentral()
     // Skript releases
     maven { url 'https://repo.skriptlang.org/releases' }
-    // Spigot API
-    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots' }
-    // Spigot API transitive dependencies
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    // Paper API
+    maven { url 'https://repo.papermc.io/repository/maven-public/' }
     // TODO: Add any other repositories your dependencies need here
-    // Paper API: maven { url 'https://repo.papermc.io/repository/maven-public/' }
     // JitPack:   maven { url 'https://jitpack.io' }
 }
 
@@ -37,11 +34,11 @@ dependencies {
     // @NotNull / @Nullable annotations — compile-time only, no runtime overhead
     implementation group: 'org.jetbrains', name: 'annotations', version: '24.1.0'
 
-    // Spigot API — use Paper API if you need Paper-specific features
-    implementation group: 'org.spigotmc', name: 'spigot-api', version: '1.19.4-R0.1-SNAPSHOT'
+    // Paper API — Skript is Paper-only
+    implementation group: 'io.papermc.paper', name: 'paper-api', version: '1.19.4-R0.1-SNAPSHOT'
 
     // Skript — transitive=false because we only need the Skript API, not its dependencies
-    implementation (group: 'com.github.SkriptLang', name: 'Skript', version: '2.14.0-pre1') {
+    implementation (group: 'com.github.SkriptLang', name: 'Skript', version: '2.14.3') {
         transitive = false
     }
 

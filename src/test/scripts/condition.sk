@@ -1,0 +1,6 @@
+test "skript-addon-template - is example dummy":
+	# Condition checks if player name starts with "A"
+	if name of player starts with "A":
+		assert player is example dummy with "Player starting with A should be example dummy"
+	else:
+		assert player is not example dummy with "Player not starting with A should not be example dummy"
