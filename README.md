@@ -219,6 +219,10 @@ For events, you can also use builder methods:
 | Effect | `Eff` | `EffTeleport.java` |
 | Event | `Evt` | `EvtBlockBreak.java` |
 
+## Example Script
+
+See [`example.sk`](example.sk) for a ready-to-use Skript file that demonstrates all the example syntax elements. Place it in `plugins/Skript/scripts/` to test.
+
 ## Building
 ```bash
 # Standard build
@@ -265,9 +269,10 @@ if (worldGuard == null || !worldGuard.isEnabled()) {
 - [Skript GitHub](https://github.com/SkriptLang/Skript)
 - [Skript JavaDocs](https://docs.skriptlang.org/javadocs/)
 - [skript-worldguard](https://github.com/SkriptLang/skript-worldguard) — Real-world addon this template is based on
-- [SkBee](https://github.com/ShaneBeestudios/SkBee) — Large Skript addon for reference
+- [SkBee](https://github.com/ShaneBeee/SkBee) — Large Skript addon for reference
 - [Spigot API JavaDocs](https://hub.spigotmc.org/javadocs/spigot/)
-- [Paper API JavaDocs](https://jd.papermc.io/paper/1.21.10/)
+- [Paper API JavaDocs](https://jd.papermc.io/paper/1.21.11/)
+- [Skript Pattern Calculator](https://bi0qaw.github.io/skript-pattern-calculator/) — Combinatoric calculator to see how many different ways your pattern can be matched
 
 ## License
 
