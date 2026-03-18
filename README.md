@@ -28,14 +28,14 @@ A minimal template for building [Skript](https://github.com/SkriptLang/Skript) a
 | I want to learn... | Read these files | Skript syntax |
 |---|---|---|
 | **How the addon starts up** | `SkriptAddonTemplate.java` | — |
-| **Expressions** (return a value) | `ExprExampleExpression.java` | `greeting of player` |
+| **Expressions** (return a value) | `ExprPlayerGreeting.java` | `greeting of player` |
 | **Conditions** (true/false checks) | `CondExampleCondition.java` | `player is example dummy` |
 | **Effects** (perform an action) | `EffExampleEffect.java` | `example announce player` |
 | **Events** (listen to Bukkit events) | `EvtExampleEvent.java` | `on example sneak toggle:` |
 | **Functions** (callable with parameters) | `FuncLocationBetween.java` | `location_between(loc1, loc2)` |
 | **Sections** (code blocks with `:`) | `SecCooldown.java` | `with cooldown 5 seconds for player:` |
 | **Structures** (top-level config blocks) | `StructCustomConfig.java` + `ExprConfigValue.java` | `custom config "name":` |
-| **Custom types** (ClassInfo, Parser, Serializer) | `TypeCustomColor.java` + `ExprCustomColor.java` | `point at 10, 20` |
+| **Custom types** (ClassInfo, Parser, Serializer) | `TypeCustomColor.java` + `ExprPointAt.java` | `point at 10, 20` |
 | **Testing** | `src/test/scripts/*.sk` | `assert {_var} is set with "msg"` |
 | **Build & CI** | `build.gradle` + `.github/workflows/gradle.yml` | — |
 
@@ -54,8 +54,8 @@ src/main/java/com/example/skriptaddon/
     ├── events/
     │   └── EvtExampleEvent.java          # "on example sneak toggle"
     ├── expressions/
-    │   ├── ExprExampleExpression.java    # "greeting of player"
-    │   ├── ExprCustomColor.java          # "point at 10, 20"
+    │   ├── ExprPlayerGreeting.java       # "greeting of player"
+    │   ├── ExprPointAt.java              # "point at 10, 20"
     │   └── ExprConfigValue.java          # "config value 'key' from 'name'"
     ├── functions/
     │   └── FuncLocationBetween.java      # "location_between(loc1, loc2)"

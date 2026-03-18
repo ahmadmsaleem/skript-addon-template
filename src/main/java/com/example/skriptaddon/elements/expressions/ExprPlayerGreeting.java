@@ -30,12 +30,12 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 			send example greeting of arg-1 to sender
 	""")
 @Since("1.0.0")
-public class ExprExampleExpression extends SimpleExpression<String> {
+public class ExprPlayerGreeting extends SimpleExpression<String> {
 
 	// Must be public static void register(SyntaxRegistry) — called via reflection by main class
 	public static void register(@NotNull SyntaxRegistry registry) {
-		registry.register(SyntaxRegistry.EXPRESSION, DefaultSyntaxInfos.Expression.builder(ExprExampleExpression.class, String.class)
-				.supplier(ExprExampleExpression::new)
+		registry.register(SyntaxRegistry.EXPRESSION, DefaultSyntaxInfos.Expression.builder(ExprPlayerGreeting.class, String.class)
+				.supplier(ExprPlayerGreeting::new)
 				.addPatterns("[example] greeting of %player%") // [example] is optional in syntax
 				.build());
 	}

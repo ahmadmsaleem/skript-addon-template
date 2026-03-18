@@ -28,11 +28,11 @@ import org.skriptlang.skript.registration.SyntaxRegistry;
 		send "%{_point}%" to player
 		""")
 @Since("1.0.0")
-public class ExprCustomColor extends SimpleExpression<TypeCustomColor> {
+public class ExprPointAt extends SimpleExpression<TypeCustomColor> {
 
 	public static void register(@NotNull SyntaxRegistry registry) {
-		registry.register(SyntaxRegistry.EXPRESSION, DefaultSyntaxInfos.Expression.builder(ExprCustomColor.class, TypeCustomColor.class)
-				.supplier(ExprCustomColor::new)
+		registry.register(SyntaxRegistry.EXPRESSION, DefaultSyntaxInfos.Expression.builder(ExprPointAt.class, TypeCustomColor.class)
+				.supplier(ExprPointAt::new)
 				.addPatterns("point at %integer%, %integer%")
 				.build());
 	}

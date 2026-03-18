@@ -6,8 +6,8 @@ import com.example.skriptaddon.elements.conditions.CondExampleCondition;
 import com.example.skriptaddon.elements.effects.EffExampleEffect;
 import com.example.skriptaddon.elements.events.EvtExampleEvent;
 import com.example.skriptaddon.elements.expressions.ExprConfigValue;
-import com.example.skriptaddon.elements.expressions.ExprCustomColor;
-import com.example.skriptaddon.elements.expressions.ExprExampleExpression;
+import com.example.skriptaddon.elements.expressions.ExprPlayerGreeting;
+import com.example.skriptaddon.elements.expressions.ExprPointAt;
 import com.example.skriptaddon.elements.functions.FuncLocationBetween;
 import com.example.skriptaddon.elements.sections.SecCooldown;
 import com.example.skriptaddon.elements.structures.StructCustomConfig;
@@ -76,8 +76,8 @@ public class SkriptAddonTemplate extends JavaPlugin implements AddonModule {
 		SyntaxRegistry registry = addon.syntaxRegistry();
 
 		// Register expressions
-		ExprExampleExpression.register(registry);
-		ExprCustomColor.register(registry);
+		ExprPlayerGreeting.register(registry);
+		ExprPointAt.register(registry);
 		ExprConfigValue.register(registry);
 
 		// Register conditions
