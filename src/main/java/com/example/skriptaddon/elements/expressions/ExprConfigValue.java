@@ -9,9 +9,7 @@ import ch.njol.skript.lang.SkriptParser.ParseResult;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import com.example.skriptaddon.elements.structures.StructCustomConfig;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.ChatColor;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,25 +56,8 @@ public class ExprConfigValue extends SimpleExpression<String> {
 		String value = StructCustomConfig.getValue(configName, key);
 		if (value == null)
 			return null;
-		// Support both legacy (&c) and MiniMessage (<green>) color formats
-		// First translate &c codes to § codes, then parse MiniMessage tags
-		String legacyTranslated = LegacyComponentSerializer.builder()
-				.character('§')
-				.hexColors()
-				.build()
-				.serialize(LegacyComponentSerializer.legacyAmpersand().deserialize(value));
 
-		// Check if the original value contains MiniMessage tags
-		if (value.contains("<") && value.contains(">")) {
-			Component component = MiniMessage.miniMessage().deserialize(value);
-			legacyTranslated = LegacyComponentSerializer.builder()
-					.character('§')
-					.hexColors()
-					.build()
-					.serialize(component);
-		}
-
-		return new String[]{legacyTranslated};
+		return new String[]{ChatColor.translateAlternateColorCodes('&', value)};
 	}
 
 	@Override
