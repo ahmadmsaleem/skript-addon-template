@@ -67,31 +67,6 @@ command /heal:
 			send "<green>You have been healed!" to player
 			send "<gray>Cooldown: 30 seconds" to player
 
-# Structure example — "custom config"
-#
-# Structures are top-level blocks (like command:, on event:) that are
-# parsed when the script loads, not at runtime. They define data or
-# configuration that other syntax can read.
-#
-# This structure reads key = value entries and stores them in a map.
-# Use "config value" expression to read them at runtime.
-
-custom config "server-messages":
-	welcome = <green>Welcome to the server!
-	farewell = &7Goodbye, see you soon!
-	rules = &eNo griefing, be respectful.
-
-# Now use the config values in actual gameplay
-on join:
-	send config value "welcome" from "server-messages" to player
-
-on quit:
-	broadcast config value "farewell" from "server-messages"
-
-command /rules:
-	trigger:
-		send config value "rules" from "server-messages" to sender
-
 # Function example — "location_between(loc1, loc2)"
 command /midpoint <player>:
 	trigger:

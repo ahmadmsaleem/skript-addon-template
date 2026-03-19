@@ -34,7 +34,6 @@ A minimal template for building [Skript](https://github.com/SkriptLang/Skript) a
 | **Events** (listen to Bukkit events) | `EvtExampleEvent.java` | `on example sneak toggle:` |
 | **Functions** (callable with parameters) | `FuncLocationBetween.java` | `location_between(loc1, loc2)` |
 | **Sections** (code blocks with `:`) | `SecCooldown.java` | `with cooldown 5 seconds for player:` |
-| **Structures** (top-level config blocks) | `StructCustomConfig.java` + `ExprConfigValue.java` | `custom config "name":` |
 | **Custom types** (ClassInfo, Parser, Serializer) | `TypeCustomColor.java` + `ExprPointAt.java` | `point at 10, 20` |
 | **Testing** | `src/test/scripts/*.sk` | `assert {_var} is set with "msg"` |
 | **Build & CI** | `build.gradle` + `.github/workflows/gradle.yml` | — |
@@ -55,14 +54,11 @@ src/main/java/com/example/skriptaddon/
     │   └── EvtExampleEvent.java          # "on example sneak toggle"
     ├── expressions/
     │   ├── ExprPlayerGreeting.java       # "greeting of player"
-    │   ├── ExprPointAt.java              # "point at 10, 20"
-    │   └── ExprConfigValue.java          # "config value 'key' from 'name'"
+    │   └── ExprPointAt.java              # "point at 10, 20"
     ├── functions/
     │   └── FuncLocationBetween.java      # "location_between(loc1, loc2)"
     ├── sections/
     │   └── SecCooldown.java              # "with cooldown 5 seconds for player:"
-    ├── structures/
-    │   └── StructCustomConfig.java       # "custom config 'name':"
     └── types/
         └── TypeCustomColor.java          # "point2d" type (2D point)
 
@@ -74,7 +70,7 @@ src/test/scripts/
 ## Registration Rules
 
 - Register custom types in `init()`.
-- Register all syntax (expressions, conditions, effects, events, sections, structures, functions) in `load()`.
+- Register all syntax (expressions, conditions, effects, events, sections, functions) in `load()`.
 
 ## Build and Test
 

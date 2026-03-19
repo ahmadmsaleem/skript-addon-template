@@ -5,12 +5,10 @@ import ch.njol.skript.util.Version;
 import com.example.skriptaddon.elements.conditions.CondExampleCondition;
 import com.example.skriptaddon.elements.effects.EffExampleEffect;
 import com.example.skriptaddon.elements.events.EvtExampleEvent;
-import com.example.skriptaddon.elements.expressions.ExprConfigValue;
 import com.example.skriptaddon.elements.expressions.ExprPlayerGreeting;
 import com.example.skriptaddon.elements.expressions.ExprPointAt;
 import com.example.skriptaddon.elements.functions.FuncLocationBetween;
 import com.example.skriptaddon.elements.sections.SecCooldown;
-import com.example.skriptaddon.elements.structures.StructCustomConfig;
 import com.example.skriptaddon.elements.types.TypeCustomColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -78,8 +76,6 @@ public class SkriptAddonTemplate extends JavaPlugin implements AddonModule {
 		// Register expressions
 		ExprPlayerGreeting.register(registry);
 		ExprPointAt.register(registry);
-		ExprConfigValue.register(registry);
-
 		// Register conditions
 		CondExampleCondition.register(registry);
 
@@ -91,9 +87,6 @@ public class SkriptAddonTemplate extends JavaPlugin implements AddonModule {
 
 		// Register sections
 		SecCooldown.register(registry);
-
-		// Register structures
-		StructCustomConfig.register(registry);
 
 		// Register functions
 		FuncLocationBetween.register(addon);
